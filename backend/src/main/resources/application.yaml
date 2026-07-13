@@ -7,3 +7,6 @@ spring:
     username: kiroku
     password: password
     driver-class-name: org.postgresql.Driver
+
+  flyway:
+    enabled: true
