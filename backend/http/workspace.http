@@ -1,0 +1,19 @@
+### Create Workspace
+POST http://localhost:8080/api/workspaces
+Content-Type: application/json
+
+{
+  "name": "My Workspace"
+}
+
+
+### Get Workspace
+GET http://localhost:8080/api/workspaces/1
+
+
+### Get Workspaces
+GET http://localhost:8080/api/workspaces
+
+
+### Delete Workspace
+DELETE http://localhost:8080/api/workspaces/1
