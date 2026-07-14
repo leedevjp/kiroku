@@ -22,7 +22,7 @@ class WorkspaceController(
     fun createWorkspace(
         @RequestBody request: CreateWorkspaceRequest
     ): ResponseEntity<WorkspaceResponse> {
-        val workspace = workspaceService.createWorkspace(request.name)
+        val workspace = workspaceService.createWorkspace(request.name, request.userId)
 
         return ResponseEntity.ok(
             WorkspaceResponse.from(workspace)
