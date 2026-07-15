@@ -1,6 +1,8 @@
 package com.kiroku.user.controller
 
+import com.kiroku.user.dto.ChangePasswordRequest
 import com.kiroku.user.dto.CreateUserRequest
+import com.kiroku.user.dto.UpdateUserRequest
 import com.kiroku.user.dto.UserResponse
 import com.kiroku.user.service.UserService
 import org.springframework.http.ResponseEntity
@@ -47,6 +49,30 @@ class UserController(
             .map { UserResponse.from(it) }
 
         return ResponseEntity.ok(users)
+    }
+
+    @PatchMapping("/{id}")
+    fun updateUser(
+        @PathVariable id: Long,
+        @RequestBody request: UpdateUserRequest
+    ): ResponseEntity<UserResponse> {
+
+        val user = userService.updateNickname(id, request.nickname)
+
+        return ResponseEntity.ok(
+            UserResponse.from(user)
+        )
+    }
+
+    @PatchMapping("/{id}/password")
+    fun changePassword(
+        @PathVariable id: Long,
+        @RequestBody request: ChangePasswordRequest
+    ): ResponseEntity<Void> {
+
+        userService.changePassword(id, request.password)
+
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")

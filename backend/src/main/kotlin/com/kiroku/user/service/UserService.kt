@@ -36,6 +36,19 @@ class UserService(
     }
 
     @Transactional
+    fun updateNickname(id: Long, nickname: String?): User {
+        val user = getUser(id)
+        user.changeNickname(nickname)
+        return user
+    }
+
+    @Transactional
+    fun changePassword(id: Long, password: String) {
+        val user = getUser(id)
+        user.changePassword(password)
+    }
+
+    @Transactional
     fun deleteUser(id: Long) {
         val user = getUser(id)
         userRepository.delete(user)
