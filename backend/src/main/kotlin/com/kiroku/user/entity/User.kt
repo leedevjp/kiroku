@@ -1,12 +1,12 @@
 package com.kiroku.user.entity
 
+import com.kiroku.global.entity.BaseTimeEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import java.time.OffsetDateTime
 
 @Entity
 @Table(name = "\"user\"")
@@ -19,16 +19,24 @@ class User(
     @Column(nullable = false, unique = true)
     val email: String,
 
+    password: String,
+
+    nickname: String? = null,
+) : BaseTimeEntity() {
+
     @Column(nullable = false)
-    val password: String,
+    var password: String = password
+        protected set
 
     @Column(length = 50)
-    val nickname: String? = null,
+    var nickname: String? = nickname
+        protected set
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: OffsetDateTime = OffsetDateTime.now(),
+    fun changePassword(password: String) {
+        this.password = password
+    }
 
-    @Column(name = "updated_at", nullable = false)
-    val updatedAt: OffsetDateTime = OffsetDateTime.now()
-
-)
+    fun changeNickname(nickname: String?) {
+        this.nickname = nickname
+    }
+}
