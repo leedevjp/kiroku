@@ -17,5 +17,32 @@ GET http://localhost:8080/api/users/1
 GET http://localhost:8080/api/users
 
 
+### Update Nickname
+PATCH http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "nickname": "lee2"
+}
+
+
+### Clear Nickname (null check)
+PATCH http://localhost:8080/api/users/1
+Content-Type: application/json
+
+{
+  "nickname": null
+}
+
+
+### Change Password
+PATCH http://localhost:8080/api/users/1/password
+Content-Type: application/json
+
+{
+  "password": "5678"
+}
+
+
 ### Delete User
 DELETE http://localhost:8080/api/users/1
