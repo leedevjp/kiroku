@@ -2,13 +2,15 @@ package com.kiroku.user.service
 
 import com.kiroku.user.entity.User
 import com.kiroku.user.repository.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional(readOnly = true)
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     @Transactional
@@ -19,7 +21,7 @@ class UserService(
     ): User {
         val user = User(
             email = email,
-            password = password,
+            password = passwordEncoder.encode(password)!!,
             nickname = nickname
         )
 
@@ -45,7 +47,7 @@ class UserService(
     @Transactional
     fun changePassword(id: Long, password: String) {
         val user = getUser(id)
-        user.changePassword(password)
+        user.changePassword(passwordEncoder.encode(password)!!)
     }
 
     @Transactional
