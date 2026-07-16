@@ -23,6 +23,10 @@ services:
     container_name: kiroku-backend
     restart: unless-stopped
 
+    environment:
+      JWT_SECRET: local-development-secret-key-should-be-long-enough-32bytes
+      JWT_ACCESS_TOKEN_EXPIRATION_MS: 3600000
+
     depends_on:
       - postgres
 
