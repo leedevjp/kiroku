@@ -50,6 +50,11 @@ class JwtTokenProvider(
         return claims.subject.toLong()
     }
 
+    fun getRemainingExpirationMillis(token: String): Long {
+        val claims = parser.parseSignedClaims(token).payload
+        return (claims.expiration.time - System.currentTimeMillis()).coerceAtLeast(0)
+    }
+
     companion object {
         private const val MIN_SECRET_LENGTH_BYTES = 32
     }

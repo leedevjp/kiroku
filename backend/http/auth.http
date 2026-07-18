@@ -26,3 +26,12 @@ Content-Type: application/json
   "email": "unknown@test.com",
   "password": "1234"
 }
+
+
+### Logout (success, accessToken input)
+POST http://localhost:8080/api/auth/logout
+Cookie: access_token=
+
+
+### Logout (no cookie)
+POST http://localhost:8080/api/auth/logout
