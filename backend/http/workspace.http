@@ -3,8 +3,7 @@ POST http://localhost:8080/api/workspaces
 Content-Type: application/json
 
 {
-  "name": "My Workspace",
-  "userId": 1
+  "name": "My Workspace"
 }
 
 

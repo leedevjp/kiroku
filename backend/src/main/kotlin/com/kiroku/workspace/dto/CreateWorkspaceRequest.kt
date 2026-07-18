@@ -1,6 +1,5 @@
 package com.kiroku.workspace.dto
 
 data class CreateWorkspaceRequest(
-    val name: String,
-    val userId: Long
+    val name: String
 )
