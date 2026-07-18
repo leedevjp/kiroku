@@ -2,7 +2,7 @@ package com.kiroku.auth.controller
 
 import com.kiroku.auth.dto.LoginRequest
 import com.kiroku.auth.service.AuthService
-import com.kiroku.global.security.TokenCookieProvider
+import com.kiroku.global.security.JwtCookieProvider
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/auth")
 class AuthController(
     private val authService: AuthService,
-    private val tokenCookieProvider: TokenCookieProvider
+    private val jwtCookieProvider: JwtCookieProvider
 ) {
 
     @PostMapping("/login")
@@ -29,7 +29,7 @@ class AuthController(
 
         response.addHeader(
             HttpHeaders.SET_COOKIE,
-            tokenCookieProvider.createAccessTokenCookie(accessToken).toString()
+            jwtCookieProvider.createAccessTokenCookie(accessToken).toString()
         )
 
         return ResponseEntity.ok().build()
@@ -41,13 +41,13 @@ class AuthController(
         response: HttpServletResponse
     ): ResponseEntity<Void> {
 
-        tokenCookieProvider.extractAccessToken(request)?.let { accessToken ->
+        jwtCookieProvider.extractAccessToken(request)?.let { accessToken ->
             authService.logout(accessToken)
         }
 
         response.addHeader(
             HttpHeaders.SET_COOKIE,
-            tokenCookieProvider.deleteAccessTokenCookie().toString()
+            jwtCookieProvider.deleteAccessTokenCookie().toString()
         )
 
         return ResponseEntity.ok().build()

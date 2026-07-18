@@ -1,8 +1,8 @@
 package com.kiroku.auth.service
 
 import com.kiroku.global.exception.InvalidCredentialsException
+import com.kiroku.global.security.JwtBlacklistService
 import com.kiroku.global.security.JwtTokenProvider
-import com.kiroku.global.security.TokenBlacklistService
 import com.kiroku.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -14,7 +14,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val tokenBlacklistService: TokenBlacklistService
+    private val jwtBlacklistService: JwtBlacklistService
 ) {
 
     fun login(email: String, password: String): String {
@@ -34,6 +34,6 @@ class AuthService(
         }
 
         val remainingValidityMillis = jwtTokenProvider.getRemainingExpirationMillis(accessToken)
-        tokenBlacklistService.blacklist(accessToken, remainingValidityMillis)
+        jwtBlacklistService.blacklist(accessToken, remainingValidityMillis)
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import java.time.Duration
 
 @Service
-class TokenBlacklistService(
+class JwtBlacklistService(
     private val redisTemplate: StringRedisTemplate
 ) {
 

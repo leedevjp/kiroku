@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import java.time.Duration
 
 @Component
-class TokenCookieProvider(
+class JwtCookieProvider(
     private val jwtProperties: JwtProperties
 ) {
 

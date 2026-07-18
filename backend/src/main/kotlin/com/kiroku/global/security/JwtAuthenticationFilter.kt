@@ -11,8 +11,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider,
-    private val tokenBlacklistService: TokenBlacklistService,
-    private val tokenCookieProvider: TokenCookieProvider
+    private val jwtBlacklistService: JwtBlacklistService,
+    private val jwtCookieProvider: JwtCookieProvider
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -20,11 +20,11 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = tokenCookieProvider.extractAccessToken(request)
+        val token = jwtCookieProvider.extractAccessToken(request)
 
         if (token != null &&
             jwtTokenProvider.validateToken(token) &&
-            !tokenBlacklistService.isBlacklisted(token)
+            !jwtBlacklistService.isBlacklisted(token)
         ) {
             val userId = jwtTokenProvider.getUserId(token)
             val authentication = UsernamePasswordAuthenticationToken(userId, null, emptyList())
