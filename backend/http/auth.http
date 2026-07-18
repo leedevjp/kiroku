@@ -28,10 +28,5 @@ Content-Type: application/json
 }
 
 
-### Logout (success, accessToken input)
-POST http://localhost:8080/api/auth/logout
-Cookie: access_token=
-
-
-### Logout (no cookie)
+### Logout
 POST http://localhost:8080/api/auth/logout

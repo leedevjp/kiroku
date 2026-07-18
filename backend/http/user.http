@@ -20,7 +20,6 @@ GET http://localhost:8080/api/users
 ### Update Nickname
 PATCH http://localhost:8080/api/users/1
 Content-Type: application/json
-Cookie: access_token=
 
 {
   "nickname": "lee2"
@@ -30,7 +29,6 @@ Cookie: access_token=
 ### Clear Nickname (null check)
 PATCH http://localhost:8080/api/users/1
 Content-Type: application/json
-Cookie: access_token=
 
 {
   "nickname": null
@@ -40,7 +38,6 @@ Cookie: access_token=
 ### Update Nickname (forbidden, not self)
 PATCH http://localhost:8080/api/users/2
 Content-Type: application/json
-Cookie: access_token=
 
 {
   "nickname": "hacked"
@@ -50,13 +47,11 @@ Cookie: access_token=
 ### Change Password
 PATCH http://localhost:8080/api/users/1/password
 Content-Type: application/json
-Cookie: access_token=
 
 {
-  "password": "5678"
+  "password": "1234"
 }
 
 
 ### Delete User
 DELETE http://localhost:8080/api/users/1
-Cookie: access_token=
