@@ -1,5 +1,6 @@
 package com.kiroku.user.controller
 
+import com.kiroku.global.security.RequireSelf
 import com.kiroku.user.dto.ChangePasswordRequest
 import com.kiroku.user.dto.CreateUserRequest
 import com.kiroku.user.dto.UpdateUserRequest
@@ -51,6 +52,7 @@ class UserController(
         return ResponseEntity.ok(users)
     }
 
+    @RequireSelf
     @PatchMapping("/{id}")
     fun updateUser(
         @PathVariable id: Long,
@@ -64,6 +66,7 @@ class UserController(
         )
     }
 
+    @RequireSelf
     @PatchMapping("/{id}/password")
     fun changePassword(
         @PathVariable id: Long,
@@ -75,6 +78,7 @@ class UserController(
         return ResponseEntity.noContent().build()
     }
 
+    @RequireSelf
     @DeleteMapping("/{id}")
     fun deleteUser(
         @PathVariable id: Long
