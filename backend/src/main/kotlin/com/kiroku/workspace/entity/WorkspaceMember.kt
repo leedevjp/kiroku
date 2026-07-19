@@ -1,5 +1,6 @@
 package com.kiroku.workspace.entity
 
+import com.kiroku.global.entity.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -9,7 +10,6 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
-import java.time.OffsetDateTime
 
 @Entity
 @Table(
@@ -37,12 +37,7 @@ class WorkspaceMember(
     @Column(nullable = false, length = 30)
     val role: WorkspaceMemberRole,
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: OffsetDateTime = OffsetDateTime.now(),
-
-    @Column(name = "updated_at", nullable = false)
-    val updatedAt: OffsetDateTime = OffsetDateTime.now()
-)
+) : BaseEntity()
 
 enum class WorkspaceMemberRole {
     OWNER,
