@@ -40,6 +40,13 @@ class WorkspaceService(
     }
 
     @Transactional
+    fun updateName(id: Long, name: String): Workspace {
+        val workspace = getWorkspace(id)
+        workspace.changeName(name)
+        return workspace
+    }
+
+    @Transactional
     fun deleteWorkspace(id: Long) {
         val workspace = getWorkspace(id)
         workspaceMemberRepository.deleteAllByWorkspaceId(id)

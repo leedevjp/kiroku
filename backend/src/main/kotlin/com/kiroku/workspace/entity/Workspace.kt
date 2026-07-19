@@ -16,7 +16,15 @@ class Workspace(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @Column(nullable = false, length = 100)
-    val name: String,
+    name: String,
 
-) : BaseEntity()
+) : BaseEntity() {
+
+    @Column(nullable = false, length = 100)
+    var name: String = name
+        protected set
+
+    fun changeName(name: String) {
+        this.name = name
+    }
+}

@@ -9,18 +9,9 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
 
 @Entity
-@Table(
-    name = "workspace_member",
-    uniqueConstraints = [
-        UniqueConstraint(
-            name = "uq_workspace_member_workspace_user",
-            columnNames = ["workspace_id", "user_id"]
-        )
-    ]
-)
+@Table(name = "workspace_member")
 class WorkspaceMember(
 
     @Id

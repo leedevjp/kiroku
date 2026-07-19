@@ -1,6 +1,7 @@
 package com.kiroku.workspace.controller
 
 import com.kiroku.workspace.dto.CreateWorkspaceRequest
+import com.kiroku.workspace.dto.UpdateWorkspaceRequest
 import com.kiroku.workspace.dto.WorkspaceResponse
 import com.kiroku.workspace.service.WorkspaceAuthorizationService
 import com.kiroku.workspace.service.WorkspaceService
@@ -9,6 +10,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -51,6 +53,23 @@ class WorkspaceController(
             .map { WorkspaceResponse.from(it) }
 
         return ResponseEntity.ok(workspaces)
+    }
+
+    @PatchMapping("/{id}")
+    fun updateWorkspace(
+        @PathVariable id: Long,
+        @RequestBody request: UpdateWorkspaceRequest,
+        @AuthenticationPrincipal userId: Long
+    ): ResponseEntity<WorkspaceResponse> {
+        if (!workspaceAuthorizationService.isOwnerOrAdmin(id, userId)) {
+            throw AccessDeniedException("Only the workspace owner or admin can update this workspace")
+        }
+
+        val workspace = workspaceService.updateName(id, request.name)
+
+        return ResponseEntity.ok(
+            WorkspaceResponse.from(workspace)
+        )
     }
 
     @DeleteMapping("/{id}")

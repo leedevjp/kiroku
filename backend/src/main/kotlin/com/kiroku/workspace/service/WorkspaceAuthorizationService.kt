@@ -15,4 +15,11 @@ class WorkspaceAuthorizationService(
 
         return member.role == WorkspaceMemberRole.OWNER
     }
+
+    fun isOwnerOrAdmin(workspaceId: Long, userId: Long): Boolean {
+        val member = workspaceMemberRepository.findByWorkspaceIdAndUserId(workspaceId, userId)
+            ?: return false
+
+        return member.role == WorkspaceMemberRole.OWNER || member.role == WorkspaceMemberRole.ADMIN
+    }
 }
