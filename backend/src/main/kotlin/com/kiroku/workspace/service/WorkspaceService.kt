@@ -42,6 +42,7 @@ class WorkspaceService(
     @Transactional
     fun deleteWorkspace(id: Long) {
         val workspace = getWorkspace(id)
+        workspaceMemberRepository.deleteAllByWorkspaceId(id)
         workspaceRepository.delete(workspace)
     }
 }
