@@ -1,0 +1,83 @@
+### Create Root Block
+POST http://localhost:8080/api/blocks
+Content-Type: application/json
+
+{
+  "workspaceId": 1,
+  "parentBlockId": null,
+  "type": "PAGE",
+  "props": {
+    "title": "Hello Kiroku"
+  }
+}
+
+
+### Create Child Block
+POST http://localhost:8080/api/blocks
+Content-Type: application/json
+
+{
+  "workspaceId": 1,
+  "parentBlockId": 1,
+  "type": "TODO",
+  "props": {
+    "text": "Write the block API",
+    "checked": false
+  }
+}
+
+
+### Create Block Right After A Specific Sibling (previousBlockId: null = insert at the front)
+POST http://localhost:8080/api/blocks
+Content-Type: application/json
+
+{
+  "workspaceId": 1,
+  "parentBlockId": 1,
+  "type": "PARAGRAPH",
+  "props": {
+    "text": "Inserted right after the TODO block"
+  },
+  "previousBlockId": 2
+}
+
+
+### Get Block
+GET http://localhost:8080/api/blocks/1
+
+
+### Get Root Blocks Of Workspace
+GET http://localhost:8080/api/blocks?workspaceId=1
+
+
+### Get Children Of Block
+GET http://localhost:8080/api/blocks/1/children
+
+
+### Update Block Props
+PATCH http://localhost:8080/api/blocks/1
+Content-Type: application/json
+
+{
+  "props": {
+    "text": "Updated text"
+  }
+}
+
+
+### Move Block
+PATCH http://localhost:8080/api/blocks/2/move
+Content-Type: application/json
+
+{
+  "parentBlockId": null,
+  "previousBlockId": 1
+}
+
+
+### Trash Block (soft delete)
+PATCH http://localhost:8080/api/blocks/1/trash
+
+
+### Delete Block (hard delete, cascades to children via FK)
+DELETE http://localhost:8080/api/blocks/1
