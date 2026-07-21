@@ -16,4 +16,13 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(ErrorResponse(message = e.message ?: "Invalid email or password"))
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgument(
+        e: IllegalArgumentException
+    ): ResponseEntity<ErrorResponse> {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(message = e.message ?: "Invalid request"))
+    }
 }
