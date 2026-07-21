@@ -38,8 +38,13 @@ class WorkspaceController(
 
     @GetMapping("/{id}")
     fun getWorkspace(
-        @PathVariable id: Long
+        @PathVariable id: Long,
+        @AuthenticationPrincipal userId: Long
     ): ResponseEntity<WorkspaceResponse> {
+        if (!workspaceAuthorizationService.isMember(id, userId)) {
+            throw AccessDeniedException("Not a member of this workspace")
+        }
+
         val workspace = workspaceService.getWorkspace(id)
 
         return ResponseEntity.ok(
@@ -48,8 +53,10 @@ class WorkspaceController(
     }
 
     @GetMapping
-    fun getWorkspaces(): ResponseEntity<List<WorkspaceResponse>> {
-        val workspaces = workspaceService.getWorkspaces()
+    fun getWorkspaces(
+        @AuthenticationPrincipal userId: Long
+    ): ResponseEntity<List<WorkspaceResponse>> {
+        val workspaces = workspaceService.getWorkspaces(userId)
             .map { WorkspaceResponse.from(it) }
 
         return ResponseEntity.ok(workspaces)

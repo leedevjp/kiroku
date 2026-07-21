@@ -33,10 +33,6 @@ class UserService(
             .orElseThrow { IllegalArgumentException("User not found: $id") }
     }
 
-    fun getUsers(): List<User> {
-        return userRepository.findAll()
-    }
-
     @Transactional
     fun updateNickname(id: Long, nickname: String?): User {
         val user = getUser(id)

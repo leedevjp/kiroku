@@ -9,6 +9,10 @@ class WorkspaceAuthorizationService(
     private val workspaceMemberRepository: WorkspaceMemberRepository
 ) {
 
+    fun isMember(workspaceId: Long, userId: Long): Boolean {
+        return workspaceMemberRepository.findByWorkspaceIdAndUserId(workspaceId, userId) != null
+    }
+
     fun isOwner(workspaceId: Long, userId: Long): Boolean {
         val member = workspaceMemberRepository.findByWorkspaceIdAndUserId(workspaceId, userId)
             ?: return false

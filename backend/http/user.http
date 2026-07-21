@@ -13,8 +13,8 @@ Content-Type: application/json
 GET http://localhost:8080/api/users/1
 
 
-### Get Users
-GET http://localhost:8080/api/users
+### Get User (forbidden, not self)
+GET http://localhost:8080/api/users/2
 
 
 ### Update Nickname

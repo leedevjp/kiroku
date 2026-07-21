@@ -35,8 +35,8 @@ class WorkspaceService(
             .orElseThrow { IllegalArgumentException("Workspace not found: $id") }
     }
 
-    fun getWorkspaces(): List<Workspace> {
-        return workspaceRepository.findAll()
+    fun getWorkspaces(userId: Long): List<Workspace> {
+        return workspaceRepository.findAllByMemberUserId(userId)
     }
 
     @Transactional

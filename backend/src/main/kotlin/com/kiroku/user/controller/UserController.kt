@@ -31,6 +31,7 @@ class UserController(
         )
     }
 
+    @RequireSelf
     @GetMapping("/{id}")
     fun getUser(
         @PathVariable id: Long
@@ -41,15 +42,6 @@ class UserController(
         return ResponseEntity.ok(
             UserResponse.from(user)
         )
-    }
-
-    @GetMapping
-    fun getUsers(): ResponseEntity<List<UserResponse>> {
-
-        val users = userService.getUsers()
-            .map { UserResponse.from(it) }
-
-        return ResponseEntity.ok(users)
     }
 
     @RequireSelf
