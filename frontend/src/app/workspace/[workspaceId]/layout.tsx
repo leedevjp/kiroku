@@ -3,8 +3,10 @@
 import { Sidebar } from "@/features/workspace/components/Sidebar";
 import { Topbar } from "@/features/workspace/components/Topbar";
 import { useWorkspaceQuery } from "@/features/workspace/hooks";
+import { apiStorage } from "@/lib/storage/api-storage";
+import { StorageProvider } from "@/lib/storage/context";
 import { useParams } from "next/navigation";
-import type { ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 
 export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   const params = useParams<{ workspaceId: string; pageId?: string }>();
@@ -14,13 +16,17 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   const { data: workspace } = useWorkspaceQuery(workspaceId);
   const workspaceName = workspace?.name ?? "Kiroku Workspace";
 
+  const pageHref = useCallback((id: number) => `/workspace/${workspaceId}/${id}`, [workspaceId]);
+
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <Topbar workspaceName={workspaceName} pageId={pageId} />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar workspaceId={workspaceId} workspaceName={workspaceName} currentPageId={pageId} />
-        <div className="flex-1 overflow-y-auto bg-white">{children}</div>
+    <StorageProvider storage={apiStorage} pageHref={pageHref}>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <Topbar workspaceName={workspaceName} pageId={pageId} />
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar workspaceId={workspaceId} workspaceName={workspaceName} currentPageId={pageId} />
+          <div className="flex-1 overflow-y-auto bg-white">{children}</div>
+        </div>
       </div>
-    </div>
+    </StorageProvider>
   );
 }
