@@ -15,7 +15,7 @@ export function PageTree({ workspaceId, currentPageId }: PageTreeProps) {
   return (
     <div className="flex-1 overflow-y-auto px-2 pb-3 pt-1">
       {pages.map((page) => (
-        <PageTreeItem key={page.id} workspaceId={workspaceId} page={page} currentPageId={currentPageId} depth={0} />
+        <PageTreeItem key={page.id} page={page} currentPageId={currentPageId} depth={0} />
       ))}
     </div>
   );

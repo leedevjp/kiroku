@@ -5,16 +5,17 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useChildBlocksQuery } from "@/features/block/hooks";
 import type { BlockResponse } from "@/features/block/types";
+import { usePageHref } from "@/lib/storage/context";
 import { useSidebarStore } from "../store";
 
 interface PageTreeItemProps {
-  workspaceId: number;
   page: BlockResponse;
   currentPageId: number | null;
   depth: number;
 }
 
-export function PageTreeItem({ workspaceId, page, currentPageId, depth }: PageTreeItemProps) {
+export function PageTreeItem({ page, currentPageId, depth }: PageTreeItemProps) {
+  const pageHref = usePageHref();
   const expanded = useSidebarStore((s) => s.expandedPageIds.has(page.id));
   const toggleExpanded = useSidebarStore((s) => s.toggleExpanded);
 
@@ -42,7 +43,7 @@ export function PageTreeItem({ workspaceId, page, currentPageId, depth }: PageTr
           {expanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
         </button>
         <Link
-          href={`/workspace/${workspaceId}/${page.id}`}
+          href={pageHref(page.id)}
           className="min-w-0 flex-1 truncate py-1.5 pr-2 text-[13px]"
         >
           {title}
@@ -52,7 +53,6 @@ export function PageTreeItem({ workspaceId, page, currentPageId, depth }: PageTr
         childPages.map((child) => (
           <PageTreeItem
             key={child.id}
-            workspaceId={workspaceId}
             page={child}
             currentPageId={currentPageId}
             depth={depth + 1}

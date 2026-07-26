@@ -1,6 +1,7 @@
 "use client";
 
 import { useCreateBlockMutation } from "@/features/block/hooks";
+import { usePageHref } from "@/lib/storage/context";
 import { Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PageTree } from "./PageTree";
@@ -13,12 +14,13 @@ interface SidebarProps {
 
 export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarProps) {
   const router = useRouter();
+  const pageHref = usePageHref();
   const createBlock = useCreateBlockMutation();
 
   function handleNewPage() {
     createBlock.mutate(
       { workspaceId, parentBlockId: null, type: "PAGE", props: { title: "" } },
-      { onSuccess: (created) => router.push(`/workspace/${workspaceId}/${created.id}`) },
+      { onSuccess: (created) => router.push(pageHref(created.id)) },
     );
   }
 
