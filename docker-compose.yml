@@ -64,6 +64,10 @@ services:
 
     environment:
       BACKEND_ORIGIN: http://backend:8080
+      # The Windows bind mount below doesn't forward native file-change events
+      # into the container, so the dev server has to poll for edits instead.
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
 
     depends_on:
       - backend

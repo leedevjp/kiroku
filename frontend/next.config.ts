@@ -11,6 +11,13 @@ import type { NextConfig } from "next";
 const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
+  // Docker Desktop's bind mount on Windows doesn't forward native file-change
+  // events into the container, so the dev server never notices edits without
+  // this. Polling works the same outside Docker too, so it's left unconditional.
+  watchOptions: {
+    pollIntervalMs: 500,
+  },
+
   async rewrites() {
     return [
       {
