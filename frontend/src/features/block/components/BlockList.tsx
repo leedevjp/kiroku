@@ -11,10 +11,14 @@ import {
 } from "../hooks";
 import type { BlockResponse, BlockType } from "../types";
 import { BlockRow } from "./BlockRow";
+import { focusEditableAtEnd } from "./EditableText";
 
 interface BlockListProps {
   workspaceId: number;
   pageId: number;
+  // Called to land the cursor in the page title when the first block is
+  // deleted, since there is no earlier block left to fall back to.
+  onFocusTitle: () => void;
 }
 
 export interface BlockListHandle {
@@ -25,7 +29,7 @@ export interface BlockListHandle {
 const CONTENT_TYPES: BlockType[] = ["PARAGRAPH", "HEADING", "TODO", "CODE", "IMAGE"];
 
 export const BlockList = forwardRef<BlockListHandle, BlockListProps>(function BlockList(
-  { workspaceId, pageId },
+  { workspaceId, pageId, onFocusTitle },
   ref,
 ) {
   const { data: children } = useChildBlocksQuery(pageId);
@@ -38,6 +42,23 @@ export const BlockList = forwardRef<BlockListHandle, BlockListProps>(function Bl
 
   const dragId = useRef<number | null>(null);
   const [focusBlockId, setFocusBlockId] = useState<number | null>(null);
+  const editableEls = useRef(new Map<number, HTMLDivElement>());
+
+  // Deletes a block and moves the cursor to the end of whatever now sits in
+  // its place: the previous block, or the page title if it was the first one.
+  function deleteBlockAndFocusPrevious(blockId: number) {
+    const index = blocks.findIndex((b) => b.id === blockId);
+    const previousId = index > 0 ? blocks[index - 1]?.id : null;
+    trashBlock.mutate(blockId, {
+      onSuccess: () => {
+        if (previousId != null) {
+          focusEditableAtEnd(editableEls.current.get(previousId) ?? null);
+        } else {
+          onFocusTitle();
+        }
+      },
+    });
+  }
 
   function commitContent(block: BlockResponse, content: string) {
     updateProps.mutate({ id: block.id, request: { props: { ...block.props, content } } });
@@ -102,7 +123,11 @@ export const BlockList = forwardRef<BlockListHandle, BlockListProps>(function Bl
           onCommitContent={(text) => commitContent(block, text)}
           onToggleTodo={() => toggleTodo(block)}
           onAddAfter={() => createBlockAt(block.id)}
-          onDelete={() => trashBlock.mutate(block.id)}
+          onDelete={() => deleteBlockAndFocusPrevious(block.id)}
+          editableRef={(el) => {
+            if (el) editableEls.current.set(block.id, el);
+            else editableEls.current.delete(block.id);
+          }}
           onDragStart={() => {
             dragId.current = block.id;
           }}

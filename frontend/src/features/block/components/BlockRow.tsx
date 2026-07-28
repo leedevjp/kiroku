@@ -13,6 +13,9 @@ interface BlockRowProps {
   onToggleTodo: () => void;
   onAddAfter: () => void;
   onDelete: () => void;
+  // Hands up the block's contentEditable element so a caller can move focus
+  // to it later (e.g. to land the cursor here after a later block is deleted).
+  editableRef: (el: HTMLDivElement | null) => void;
   onDragStart: (e: DragEvent<HTMLDivElement>) => void;
   onDragOver: (e: DragEvent<HTMLDivElement>) => void;
   onDrop: (e: DragEvent<HTMLDivElement>) => void;
@@ -22,9 +25,20 @@ function textContent(props: Record<string, unknown>): string {
   return typeof props.content === "string" ? props.content : "";
 }
 
-type BlockContentProps = Pick<BlockRowProps, "block" | "autoFocus" | "onCommitContent" | "onToggleTodo" | "onAddAfter">;
+type BlockContentProps = Pick<
+  BlockRowProps,
+  "block" | "autoFocus" | "onCommitContent" | "onToggleTodo" | "onAddAfter" | "onDelete" | "editableRef"
+>;
 
-function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAfter }: BlockContentProps) {
+function BlockContent({
+  block,
+  autoFocus,
+  onCommitContent,
+  onToggleTodo,
+  onAddAfter,
+  onDelete,
+  editableRef,
+}: BlockContentProps) {
   const content = textContent(block.props);
 
   switch (block.type) {
@@ -32,10 +46,12 @@ function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAf
       const level = block.props.level === 2 ? 2 : 1;
       return (
         <EditableText
+          ref={editableRef}
           value={content}
           autoFocus={autoFocus}
           onCommit={onCommitContent}
           onEnter={onAddAfter}
+          onDeleteEmpty={onDelete}
           className={
             level === 1
               ? "py-1 text-xl font-bold text-zinc-900"
@@ -58,10 +74,12 @@ function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAf
             )}
           />
           <EditableText
+            ref={editableRef}
             value={content}
             autoFocus={autoFocus}
             onCommit={onCommitContent}
             onEnter={onAddAfter}
+            onDeleteEmpty={onDelete}
             className={clsx(
               "flex-1 text-[15px] leading-relaxed",
               checked ? "text-zinc-400 line-through" : "text-zinc-900",
@@ -76,9 +94,11 @@ function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAf
         <div className="my-2 rounded-md border border-zinc-200 bg-zinc-50 px-3.5 py-3">
           <div className="mb-1.5 font-mono text-[11px] text-zinc-500">{lang}</div>
           <EditableText
+            ref={editableRef}
             value={content}
             autoFocus={autoFocus}
             onCommit={onCommitContent}
+            onDeleteEmpty={onDelete}
             className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-zinc-900"
           />
         </div>
@@ -88,10 +108,12 @@ function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAf
     default:
       return (
         <EditableText
+          ref={editableRef}
           value={content}
           autoFocus={autoFocus}
           onCommit={onCommitContent}
           onEnter={onAddAfter}
+          onDeleteEmpty={onDelete}
           className="py-0.5 text-[15px] leading-relaxed text-zinc-900"
         />
       );
@@ -105,6 +127,7 @@ export function BlockRow({
   onToggleTodo,
   onAddAfter,
   onDelete,
+  editableRef,
   onDragStart,
   onDragOver,
   onDrop,
@@ -127,6 +150,8 @@ export function BlockRow({
           onCommitContent={onCommitContent}
           onToggleTodo={onToggleTodo}
           onAddAfter={onAddAfter}
+          onDelete={onDelete}
+          editableRef={editableRef}
         />
       </div>
       <div className="flex flex-shrink-0 flex-col gap-0.5 pt-0.5 opacity-0 group-hover:opacity-100">
