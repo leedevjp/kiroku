@@ -4,9 +4,10 @@ import type { NextConfig } from "next";
 // /api/* are proxied server-side to the Spring Boot backend, so cookie-based
 // auth works same-origin and the backend never needs CORS configured.
 //
-// BACKEND_ORIGIN points at localhost:8080 for local dev against the existing
-// docker-compose backend. Once the frontend itself joins docker-compose,
-// this becomes the compose service name, e.g. http://backend:8080.
+// BACKEND_ORIGIN defaults to localhost:8080 for running `pnpm dev` outside
+// Docker. Inside docker-compose it's set to the backend service name
+// (http://backend:8080), the same override-via-env-var pattern application.yaml
+// uses for POSTGRES_HOST/REDIS_HOST.
 const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
