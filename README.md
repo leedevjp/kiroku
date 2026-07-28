@@ -67,6 +67,8 @@ cd kiroku
 docker compose up
 ```
 
+起動後、ブラウザで **http://localhost:3000** にアクセスしてください。
+
 ---
 
 ## 🏗 ディレクトリ構成
