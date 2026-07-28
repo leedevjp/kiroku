@@ -3,6 +3,8 @@
 import { useBlockQuery } from "@/features/block/hooks";
 import { useIsMutating } from "@tanstack/react-query";
 import clsx from "clsx";
+import { Menu } from "lucide-react";
+import { useSidebarStore } from "../store";
 
 interface TopbarProps {
   workspaceName: string;
@@ -19,10 +21,19 @@ export function Topbar({ workspaceName, pageId }: TopbarProps) {
   const { data: parentPage } = useBlockQuery(parentId ?? 0, { enabled: parentId != null });
 
   const isSaving = useIsMutating({ mutationKey: ["blocks", "write"] }) > 0;
+  const toggleMobileOpen = useSidebarStore((s) => s.toggleMobileOpen);
 
   return (
     <div className="flex h-[52px] flex-shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-5">
       <div className="flex min-w-0 items-center gap-1.5 overflow-hidden text-[13px] text-zinc-500">
+        <button
+          type="button"
+          onClick={toggleMobileOpen}
+          aria-label="サイドバーを開く"
+          className="-ml-1.5 mr-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-zinc-500 hover:bg-zinc-100 md:hidden"
+        >
+          <Menu size={16} />
+        </button>
         <span className="whitespace-nowrap">{workspaceName}</span>
         {page && (
           <>
