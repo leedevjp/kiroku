@@ -44,10 +44,12 @@ export function Topbar({ workspaceName, pageId }: TopbarProps) {
             <span>{isSaving ? "保存中…" : "保存済み"}</span>
           </div>
         )}
+        {/* Hidden until login is actually implemented
         <div className="h-3.5 w-px bg-zinc-200" />
         <a href="#" className="text-[13px] font-medium text-zinc-900">
           ログイン
         </a>
+        */}
       </div>
     </div>
   );

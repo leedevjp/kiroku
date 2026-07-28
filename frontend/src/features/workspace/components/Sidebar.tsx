@@ -2,7 +2,7 @@
 
 import { useCreateBlockMutation } from "@/features/block/hooks";
 import { usePageHref } from "@/lib/storage/context";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PageTree } from "./PageTree";
 
@@ -33,6 +33,7 @@ export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarPr
         <div className="min-w-0 flex-1 truncate text-[13px] font-semibold text-zinc-900">{workspaceName}</div>
       </div>
 
+      {/* Hidden until search is actually implemented
       <div className="px-4 pb-2.5">
         <div className="flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-zinc-400">
           <Search size={14} />
@@ -44,6 +45,7 @@ export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarPr
           />
         </div>
       </div>
+      */}
 
       <button
         type="button"
@@ -58,6 +60,7 @@ export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarPr
 
       <PageTree workspaceId={workspaceId} currentPageId={currentPageId} />
 
+      {/* Hidden until login is actually implemented
       <div className="border-t border-zinc-200 px-4 py-3">
         <div className="mb-1.5 text-[12px] leading-relaxed text-zinc-500">
           ログインするとページを同期・共有できます
@@ -66,6 +69,7 @@ export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarPr
           ログイン →
         </a>
       </div>
+      */}
     </div>
   );
 }
