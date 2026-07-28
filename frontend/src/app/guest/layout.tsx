@@ -18,7 +18,7 @@ export default function GuestLayout({ children }: { children: ReactNode }) {
   const pageId = params.pageId ? Number(params.pageId) : null;
 
   return (
-    <StorageProvider storage={guestStorage} pageHref={pageHref}>
+    <StorageProvider storage={guestStorage} pageHref={pageHref} homeHref="/guest">
       <div className="flex h-screen flex-col overflow-hidden">
         <Topbar workspaceName={WORKSPACE_NAME} pageId={pageId} />
         <div className="flex flex-1 overflow-hidden">

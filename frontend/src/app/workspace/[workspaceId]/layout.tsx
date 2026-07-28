@@ -19,7 +19,7 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   const pageHref = useCallback((id: number) => `/workspace/${workspaceId}/${id}`, [workspaceId]);
 
   return (
-    <StorageProvider storage={apiStorage} pageHref={pageHref}>
+    <StorageProvider storage={apiStorage} pageHref={pageHref} homeHref={`/workspace/${workspaceId}`}>
       <div className="flex h-screen flex-col overflow-hidden">
         <Topbar workspaceName={workspaceName} pageId={pageId} />
         <div className="flex flex-1 overflow-hidden">

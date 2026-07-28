@@ -97,17 +97,38 @@ function findAlive(data: GuestData, id: number): StoredBlock {
   return block;
 }
 
+// Mirrors the backend's hasTrashedAncestor check: a block whose parent chain
+// contains a trashed page is treated as gone even though its own row is
+// still marked alive, so orphaned subpages of a deleted page don't linger
+// as reachable.
+function hasTrashedAncestor(data: GuestData, block: StoredBlock): boolean {
+  let parentId = block.parentBlockId;
+  while (parentId != null) {
+    const parent = data.blocks.find((b) => b.id === parentId);
+    if (!parent) return false;
+    if (parent.trashed) return true;
+    parentId = parent.parentBlockId;
+  }
+  return false;
+}
+
 export const guestStorage: Storage = {
   async getRootBlocks(_workspaceId: number): Promise<BlockResponse[]> {
     return siblingsOf(load(), null).map(toResponse);
   },
 
   async getChildren(blockId: number): Promise<BlockResponse[]> {
-    return siblingsOf(load(), blockId).map(toResponse);
+    const data = load();
+    const parent = findAlive(data, blockId);
+    if (hasTrashedAncestor(data, parent)) throw new Error("Block not found.");
+    return siblingsOf(data, blockId).map(toResponse);
   },
 
   async getBlock(id: number): Promise<BlockResponse> {
-    return toResponse(findAlive(load(), id));
+    const data = load();
+    const block = findAlive(data, id);
+    if (hasTrashedAncestor(data, block)) throw new Error("Block not found.");
+    return toResponse(block);
   },
 
   async createBlock(request: CreateBlockRequest): Promise<BlockResponse> {
