@@ -8,6 +8,7 @@ import { EditableText } from "./EditableText";
 
 interface BlockRowProps {
   block: BlockResponse;
+  autoFocus?: boolean;
   onCommitContent: (text: string) => void;
   onToggleTodo: () => void;
   onAddAfter: () => void;
@@ -21,7 +22,9 @@ function textContent(props: Record<string, unknown>): string {
   return typeof props.content === "string" ? props.content : "";
 }
 
-function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowProps, "block" | "onCommitContent" | "onToggleTodo">) {
+type BlockContentProps = Pick<BlockRowProps, "block" | "autoFocus" | "onCommitContent" | "onToggleTodo" | "onAddAfter">;
+
+function BlockContent({ block, autoFocus, onCommitContent, onToggleTodo, onAddAfter }: BlockContentProps) {
   const content = textContent(block.props);
 
   switch (block.type) {
@@ -30,7 +33,9 @@ function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowPro
       return (
         <EditableText
           value={content}
+          autoFocus={autoFocus}
           onCommit={onCommitContent}
+          onEnter={onAddAfter}
           className={
             level === 1
               ? "py-1 text-xl font-bold text-zinc-900"
@@ -54,7 +59,9 @@ function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowPro
           />
           <EditableText
             value={content}
+            autoFocus={autoFocus}
             onCommit={onCommitContent}
+            onEnter={onAddAfter}
             className={clsx(
               "flex-1 text-[15px] leading-relaxed",
               checked ? "text-zinc-400 line-through" : "text-zinc-900",
@@ -70,6 +77,7 @@ function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowPro
           <div className="mb-1.5 font-mono text-[11px] text-zinc-500">{lang}</div>
           <EditableText
             value={content}
+            autoFocus={autoFocus}
             onCommit={onCommitContent}
             className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-zinc-900"
           />
@@ -81,7 +89,9 @@ function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowPro
       return (
         <EditableText
           value={content}
+          autoFocus={autoFocus}
           onCommit={onCommitContent}
+          onEnter={onAddAfter}
           className="py-0.5 text-[15px] leading-relaxed text-zinc-900"
         />
       );
@@ -90,6 +100,7 @@ function BlockContent({ block, onCommitContent, onToggleTodo }: Pick<BlockRowPro
 
 export function BlockRow({
   block,
+  autoFocus,
   onCommitContent,
   onToggleTodo,
   onAddAfter,
@@ -110,7 +121,13 @@ export function BlockRow({
         <GripVertical size={14} />
       </div>
       <div className="min-w-0 flex-1">
-        <BlockContent block={block} onCommitContent={onCommitContent} onToggleTodo={onToggleTodo} />
+        <BlockContent
+          block={block}
+          autoFocus={autoFocus}
+          onCommitContent={onCommitContent}
+          onToggleTodo={onToggleTodo}
+          onAddAfter={onAddAfter}
+        />
       </div>
       <div className="flex flex-shrink-0 flex-col gap-0.5 pt-0.5 opacity-0 group-hover:opacity-100">
         <button

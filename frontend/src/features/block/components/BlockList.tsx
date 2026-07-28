@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import type { DragEvent } from "react";
 import {
   useChildBlocksQuery,
@@ -17,9 +17,17 @@ interface BlockListProps {
   pageId: number;
 }
 
+export interface BlockListHandle {
+  // Inserts an empty paragraph before every other block and focuses it.
+  addBlockAtTop: () => void;
+}
+
 const CONTENT_TYPES: BlockType[] = ["PARAGRAPH", "HEADING", "TODO", "CODE", "IMAGE"];
 
-export function BlockList({ workspaceId, pageId }: BlockListProps) {
+export const BlockList = forwardRef<BlockListHandle, BlockListProps>(function BlockList(
+  { workspaceId, pageId },
+  ref,
+) {
   const { data: children } = useChildBlocksQuery(pageId);
   const blocks = (children ?? []).filter((b) => CONTENT_TYPES.includes(b.type));
 
@@ -29,6 +37,7 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
   const trashBlock = useTrashBlockMutation();
 
   const dragId = useRef<number | null>(null);
+  const [focusBlockId, setFocusBlockId] = useState<number | null>(null);
 
   function commitContent(block: BlockResponse, content: string) {
     updateProps.mutate({ id: block.id, request: { props: { ...block.props, content } } });
@@ -41,16 +50,16 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
     });
   }
 
-  function addBlockAfter(afterId: number | null) {
-    const previousBlockId = afterId ?? (blocks.length > 0 ? blocks[blocks.length - 1].id : null);
-    createBlock.mutate({
-      workspaceId,
-      parentBlockId: pageId,
-      type: "PARAGRAPH",
-      props: { content: "" },
-      previousBlockId,
-    });
+  function createBlockAt(previousBlockId: number | null) {
+    createBlock.mutate(
+      { workspaceId, parentBlockId: pageId, type: "PARAGRAPH", props: { content: "" }, previousBlockId },
+      { onSuccess: (created) => setFocusBlockId(created.id) },
+    );
   }
+
+  useImperativeHandle(ref, () => ({
+    addBlockAtTop: () => createBlockAt(null),
+  }));
 
   function handleDrop(targetBlock: BlockResponse) {
     const draggedId = dragId.current;
@@ -70,14 +79,11 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
   if (blocks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center px-5 py-20 text-center">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-zinc-300 text-2xl text-zinc-300">
-          +
-        </div>
         <div className="mb-1 text-[15px] font-semibold text-zinc-900">まだ内容がありません</div>
         <div className="mb-5 text-[13px] text-zinc-500">最初のブロックを追加して記録を始めましょう</div>
         <button
           type="button"
-          onClick={() => addBlockAfter(null)}
+          onClick={() => createBlockAt(null)}
           className="rounded-md bg-indigo-600 px-4 py-2 text-[13px] font-semibold text-white"
         >
           書き始める
@@ -92,9 +98,10 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
         <BlockRow
           key={block.id}
           block={block}
+          autoFocus={block.id === focusBlockId}
           onCommitContent={(text) => commitContent(block, text)}
           onToggleTodo={() => toggleTodo(block)}
-          onAddAfter={() => addBlockAfter(block.id)}
+          onAddAfter={() => createBlockAt(block.id)}
           onDelete={() => trashBlock.mutate(block.id)}
           onDragStart={() => {
             dragId.current = block.id;
@@ -105,7 +112,7 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
       ))}
       <button
         type="button"
-        onClick={() => addBlockAfter(blocks[blocks.length - 1]?.id ?? null)}
+        onClick={() => createBlockAt(blocks[blocks.length - 1]?.id ?? null)}
         className="mt-2 flex items-center gap-1.5 py-2.5 text-[14px] text-zinc-300 hover:text-indigo-600"
       >
         <span>+</span>
@@ -113,4 +120,4 @@ export function BlockList({ workspaceId, pageId }: BlockListProps) {
       </button>
     </div>
   );
-}
+});
