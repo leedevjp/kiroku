@@ -43,3 +43,19 @@ export async function trashBlock(id: number): Promise<BlockResponse> {
   const { data } = await apiClient.patch<BlockResponse>(`/blocks/${id}/trash`);
   return data;
 }
+
+export async function getTrashedBlocks(workspaceId: number): Promise<BlockResponse[]> {
+  const { data } = await apiClient.get<BlockResponse[]>("/blocks/trash", {
+    params: { workspaceId },
+  });
+  return data;
+}
+
+export async function restoreBlock(id: number): Promise<BlockResponse> {
+  const { data } = await apiClient.patch<BlockResponse>(`/blocks/${id}/restore`);
+  return data;
+}
+
+export async function deleteBlock(id: number): Promise<void> {
+  await apiClient.delete(`/blocks/${id}`);
+}

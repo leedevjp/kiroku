@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from "@tanstack/react-query";
 import { useStorage } from "@/lib/storage/context";
+import * as blockApi from "./api";
 import { blockKeys } from "./queryKeys";
 import type { BlockResponse, CreateBlockRequest, MoveBlockRequest, UpdateBlockPropsRequest } from "./types";
 
@@ -93,6 +94,39 @@ export function useTrashBlockMutation() {
     mutationFn: (id: number) => storage.trashBlock(id),
     onSuccess: (trashed) => {
       queryClient.invalidateQueries({ queryKey: siblingsKey(trashed) });
+    },
+  });
+}
+
+// --- Trash screen hooks ---------------------------------------------------
+// The trash screen only exists for signed-in workspaces, so these talk to the
+// REST api directly instead of going through the Storage abstraction (which
+// exists to keep the *editor* agnostic of guest vs. api persistence).
+
+export function useTrashedBlocksQuery(workspaceId: number) {
+  return useQuery({
+    queryKey: blockKeys.trash(workspaceId),
+    queryFn: () => blockApi.getTrashedBlocks(workspaceId),
+  });
+}
+
+export function useRestoreBlockMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => blockApi.restoreBlock(id),
+    onSuccess: (restored) => {
+      queryClient.invalidateQueries({ queryKey: blockKeys.trash(restored.workspaceId) });
+      queryClient.invalidateQueries({ queryKey: siblingsKey(restored) });
+    },
+  });
+}
+
+export function useDeleteBlockMutation(workspaceId: number) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => blockApi.deleteBlock(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: blockKeys.trash(workspaceId) });
     },
   });
 }

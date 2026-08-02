@@ -4,4 +4,6 @@ export const blockKeys = {
   // Direct children of a block - fetched lazily when a tree node expands.
   children: (blockId: number) => ["blocks", blockId, "children"] as const,
   detail: (id: number) => ["blocks", id] as const,
+  // Trashed PAGE blocks of a workspace (trash screen).
+  trash: (workspaceId: number) => ["blocks", "trash", workspaceId] as const,
 };

@@ -3,7 +3,8 @@
 import { useCreateBlockMutation } from "@/features/block/hooks";
 import { usePageHref } from "@/lib/storage/context";
 import clsx from "clsx";
-import { Plus } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSidebarStore } from "../store";
@@ -13,9 +14,12 @@ interface SidebarProps {
   workspaceId: number;
   workspaceName: string;
   currentPageId: number | null;
+  // Entry point to the settings shell (trash, workspace settings, ...).
+  // Only provided in signed-in workspace mode - guest mode has no settings.
+  settingsHref?: string;
 }
 
-export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarProps) {
+export function Sidebar({ workspaceId, workspaceName, currentPageId, settingsHref }: SidebarProps) {
   const router = useRouter();
   const pageHref = usePageHref();
   const createBlock = useCreateBlockMutation();
@@ -84,6 +88,18 @@ export function Sidebar({ workspaceId, workspaceName, currentPageId }: SidebarPr
         <div className="mx-4 mb-1 mt-2 h-px bg-zinc-200" />
 
         <PageTree workspaceId={workspaceId} currentPageId={currentPageId} />
+
+        {settingsHref && (
+          <div className="border-t border-zinc-200">
+            <Link
+              href={settingsHref}
+              className="flex items-center gap-1.5 px-4 py-2.5 text-[13px] font-medium text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+            >
+              <Settings size={14} />
+              <span>設定とゴミ箱</span>
+            </Link>
+          </div>
+        )}
 
         {/* Hidden until login is actually implemented
       <div className="border-t border-zinc-200 px-4 py-3">

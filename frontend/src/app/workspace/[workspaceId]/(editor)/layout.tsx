@@ -21,9 +21,14 @@ export default function WorkspaceLayout({ children }: { children: ReactNode }) {
   return (
     <StorageProvider storage={apiStorage} pageHref={pageHref} homeHref={`/workspace/${workspaceId}`}>
       <div className="flex h-screen flex-col overflow-hidden">
-        <Topbar workspaceName={workspaceName} pageId={pageId} />
+        <Topbar pageId={pageId} />
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar workspaceId={workspaceId} workspaceName={workspaceName} currentPageId={pageId} />
+          <Sidebar
+            workspaceId={workspaceId}
+            workspaceName={workspaceName}
+            currentPageId={pageId}
+            settingsHref={`/workspace/${workspaceId}/trash`}
+          />
           <div className="flex-1 overflow-y-auto bg-white">{children}</div>
         </div>
       </div>
