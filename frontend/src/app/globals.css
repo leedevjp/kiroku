@@ -29,3 +29,8 @@ body {
   content: attr(data-placeholder);
   color: #b6b9bd;
 }
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
