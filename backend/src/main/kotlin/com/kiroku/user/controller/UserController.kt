@@ -7,6 +7,7 @@ import com.kiroku.user.dto.UpdateUserRequest
 import com.kiroku.user.dto.UserResponse
 import com.kiroku.user.service.UserService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -25,6 +26,18 @@ class UserController(
             password = request.password,
             nickname = request.nickname
         )
+
+        return ResponseEntity.ok(
+            UserResponse.from(user)
+        )
+    }
+
+    @GetMapping("/me")
+    fun getMe(
+        @AuthenticationPrincipal userId: Long
+    ): ResponseEntity<UserResponse> {
+
+        val user = userService.getUser(userId)
 
         return ResponseEntity.ok(
             UserResponse.from(user)
