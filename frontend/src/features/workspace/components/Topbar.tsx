@@ -1,21 +1,18 @@
 "use client";
 
 import { useBlockQuery } from "@/features/block/hooks";
+import { pageTitleOf } from "@/features/block/title";
 import { useIsMutating } from "@tanstack/react-query";
 import clsx from "clsx";
 import { Menu } from "lucide-react";
+import Link from "next/link";
 import { useSidebarStore } from "../store";
 
 interface TopbarProps {
-  workspaceName: string;
   pageId: number | null;
 }
 
-function titleOf(props: Record<string, unknown> | undefined): string {
-  return props && typeof props.title === "string" && props.title ? props.title : "無題のページ";
-}
-
-export function Topbar({ workspaceName, pageId }: TopbarProps) {
+export function Topbar({ pageId }: TopbarProps) {
   const { data: page } = useBlockQuery(pageId ?? 0, { enabled: pageId != null });
   const parentId = page?.parentBlockId ?? null;
   const { data: parentPage } = useBlockQuery(parentId ?? 0, { enabled: parentId != null });
@@ -34,17 +31,26 @@ export function Topbar({ workspaceName, pageId }: TopbarProps) {
         >
           <Menu size={16} />
         </button>
-        <span className="whitespace-nowrap">{workspaceName}</span>
+        <Link
+          href="/"
+          aria-label="Kirokuのホームに戻る"
+          className="-ml-1 mr-0.5 flex flex-shrink-0 items-center gap-1.5 rounded px-1 py-1 hover:bg-zinc-100"
+        >
+          <div className="flex h-[22px] w-[22px] items-center justify-center rounded-md bg-indigo-600 text-xs font-bold text-white">
+            K
+          </div>
+          <span className="whitespace-nowrap text-[13px] font-bold text-zinc-900">Kiroku</span>
+        </Link>
         {page && (
           <>
             <span>/</span>
             {parentPage && (
               <>
-                <span className="whitespace-nowrap">{titleOf(parentPage.props)}</span>
+                <span className="whitespace-nowrap">{pageTitleOf(parentPage.props)}</span>
                 <span>/</span>
               </>
             )}
-            <span className="truncate font-medium text-zinc-900">{titleOf(page.props)}</span>
+            <span className="truncate font-medium text-zinc-900">{pageTitleOf(page.props)}</span>
           </>
         )}
       </div>
