@@ -48,12 +48,12 @@ export function WorkspaceSelect() {
   return (
     <div className="min-h-screen bg-white">
       <div className="flex h-16 items-center justify-between border-b border-zinc-200 px-8">
-        <div className="flex items-center gap-2">
+        <Link href="/" aria-label="Kirokuのホームに戻る" className="flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-600 text-[13px] font-bold text-white">
             K
           </div>
           <span className="text-[15px] font-bold text-zinc-900">Kiroku</span>
-        </div>
+        </Link>
         <button
           type="button"
           onClick={() => logout.mutate(undefined, { onSuccess: () => router.push("/login") })}
