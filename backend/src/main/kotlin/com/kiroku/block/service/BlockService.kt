@@ -97,6 +97,19 @@ class BlockService(
         return block
     }
 
+    fun getTrashedBlocks(workspaceId: Long, userId: Long): List<Block> {
+        requireMembership(workspaceId, userId)
+        return blockRepository.findByWorkspaceIdAndIsTrashedTrueOrderByUpdatedAtDesc(workspaceId)
+    }
+
+    @Transactional
+    fun restoreBlock(id: Long, userId: Long): Block {
+        val block = getBlockOrThrow(id)
+        requireMembership(block.workspaceId, userId)
+        block.restore()
+        return block
+    }
+
     @Transactional
     fun deleteBlock(id: Long, userId: Long) {
         val block = getBlockOrThrow(id)

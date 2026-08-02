@@ -70,6 +70,10 @@ class Block(
     fun trash() {
         this.isTrashed = true
     }
+
+    fun restore() {
+        this.isTrashed = false
+    }
 }
 
 enum class BlockType {

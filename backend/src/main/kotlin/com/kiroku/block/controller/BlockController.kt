@@ -35,6 +35,18 @@ class BlockController(
         )
     }
 
+    @GetMapping("/trash")
+    fun getTrashedBlocks(
+        @RequestParam workspaceId: Long,
+        @AuthenticationPrincipal userId: Long
+    ): ResponseEntity<List<BlockResponse>> {
+
+        val blocks = blockService.getTrashedBlocks(workspaceId, userId)
+            .map { BlockResponse.from(it) }
+
+        return ResponseEntity.ok(blocks)
+    }
+
     @GetMapping("/{id}")
     fun getBlock(
         @PathVariable id: Long,
@@ -112,6 +124,19 @@ class BlockController(
     ): ResponseEntity<BlockResponse> {
 
         val block = blockService.trashBlock(id, userId)
+
+        return ResponseEntity.ok(
+            BlockResponse.from(block)
+        )
+    }
+
+    @PatchMapping("/{id}/restore")
+    fun restoreBlock(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal userId: Long
+    ): ResponseEntity<BlockResponse> {
+
+        val block = blockService.restoreBlock(id, userId)
 
         return ResponseEntity.ok(
             BlockResponse.from(block)

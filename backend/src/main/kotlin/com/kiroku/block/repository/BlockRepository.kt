@@ -12,4 +12,8 @@ interface BlockRepository : JpaRepository<Block, Long> {
     fun findByParentBlockIdAndIsTrashedFalseOrderByPosition(
         parentBlockId: Long
     ): List<Block>
+
+    fun findByWorkspaceIdAndIsTrashedTrueOrderByUpdatedAtDesc(
+        workspaceId: Long
+    ): List<Block>
 }
