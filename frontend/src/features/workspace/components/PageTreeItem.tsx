@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useChildBlocksQuery, useTrashBlockMutation } from "@/features/block/hooks";
+import { pageTitleOf } from "@/features/block/title";
 import type { BlockResponse } from "@/features/block/types";
 import { useHomeHref, usePageHref } from "@/lib/storage/context";
 import { useSidebarStore } from "../store";
@@ -27,7 +28,7 @@ export function PageTreeItem({ page, currentPageId, depth }: PageTreeItemProps) 
   const childPages = (children ?? []).filter((b) => b.type === "PAGE");
 
   const active = page.id === currentPageId;
-  const title = typeof page.props.title === "string" && page.props.title ? page.props.title : "無題のページ";
+  const title = pageTitleOf(page.props);
 
   function handleDelete() {
     trashBlock.mutate(page.id, {
