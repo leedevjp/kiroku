@@ -16,13 +16,21 @@ Notion に着想を得たページ・ブロック構造を持つドキュメン�
 
 ## 🚀 Demo
 
-**ゲストモード（ログイン不要で試せます）**
+**Demo URL**
 
-**https://kiroku-demo.vercel.app/guest**
+https://kiroku-demo.vercel.app/
 
-現状はフロントエンドのみ Vercel にデプロイしています。
+Frontend は Vercel に、Backend は VPS 環境に Docker Compose を利用してデプロイしています。
 
-バックエンドは未デプロイのため、ログインやサーバー側でのデータ保存は行えませんが、LocalStorage ベースのゲストモードで機能をお試しいただけます。
+以下の機能をお試しいただけます。
+
+* ユーザー登録・ログイン
+* Workspace 作成
+* ページ・ブロック編集
+* ゲストモード（ログイン不要）
+
+ゲストモードでは LocalStorage を利用し、ログイン不要で基本的な編集機能を確認できます。
+ログイン後は Backend API と連携し、サーバー側でデータを永続化します。
 
 ---
 
